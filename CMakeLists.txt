@@ -24,6 +24,8 @@ add_library( # Sets the name of the library.
              src/main/cpp/MSHook/PosixMemory.cpp
              src/main/cpp/Core/FastLoadDex.cpp
              src/main/cpp/util.cpp
+             src/main/cpp/mshook.cpp
+             src/main/cpp/rubick.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a
