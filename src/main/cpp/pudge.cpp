@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <sys/mman.h>
-#include "rubick.h"
+#include "pudge.h"
 #include "MSHook/Hooker.h"
 #define MAX_NAME_LEN 256
 #define MEMORY_ONLY  "[memory]"
@@ -34,8 +34,8 @@ int my_pread(int fd, void *buf, size_t count, off_t offset) {
     return read(fd, buf, count);
 }
 
-int lookupInternel(struct SymbolList *sl, unsigned char type, const char *name, unsigned long *val,
-                   unsigned long *size) {
+int lookupInternel(struct SymbolList *sl, unsigned char type, const char *name, unsigned int *val,
+                   unsigned int *size) {
     Elf32_Sym *p;
     int len;
     int i;
@@ -47,11 +47,11 @@ int lookupInternel(struct SymbolList *sl, unsigned char type, const char *name, 
             //if (p->st_value != 0) {
             *val = p->st_value;
             *size = p->st_size;
-            return 0;
+            return 1;
             //}
         }
     }
-    return -1;
+    return 0;
 }
 
 struct SymbolList *getSymbolList(int fd, Elf32_Shdr *symh, Elf32_Shdr *strh) {
@@ -321,7 +321,7 @@ int getTargetLibAddr(const char *soname, char *name, int len, unsigned long *sta
     }
     if (i >= count)
         /* not found */
-        return -1;
+        return 0;
 
     *start = m->start;
     strncpy(name, m->name, len);
@@ -329,7 +329,7 @@ int getTargetLibAddr(const char *soname, char *name, int len, unsigned long *sta
         name[len - 1] = '\0';
 
     mprotect((void *) m->start, m->end - m->start, PROT_READ | PROT_WRITE | PROT_EXEC);
-    return 0;
+    return 1;
 }
 /* 根据so 的 path 读取解析 P_SymbolTab 包含静态段 动态段 */
 P_SymbolTab loadSymbolTab(char *filename) {
@@ -338,7 +338,7 @@ P_SymbolTab loadSymbolTab(char *filename) {
 
     symtab = (P_SymbolTab) malloc(sizeof(*symtab));
     memset(symtab, 0, sizeof(*symtab));
-
+    LOGD("open file %s",filename);
     fd = open(filename, O_RDONLY);
     if (0 > fd) {
         LOGD("%s open\n", __func__);
@@ -354,11 +354,11 @@ P_SymbolTab loadSymbolTab(char *filename) {
     return symtab;
 }
 /* 根据P_SymbolTab 找到对应的符号 */
-int lookupSymbol(P_SymbolTab s, unsigned char type, const char *name, unsigned long *val,
-                 unsigned long *size) {
-    if (s->dyn && !lookupInternel(s->dyn, type, name, val, size))
+int lookupSymbol(P_SymbolTab s, unsigned char type, const char *name, unsigned int *val,
+                 unsigned int *size) {
+    if (s->dyn && lookupInternel(s->dyn, type, name, val, size))
         return 1;
-    if (s->st && !lookupInternel(s->st, type, name, val, size))
+    if (s->st && lookupInternel(s->st, type, name, val, size))
         return 1;
     return 0;
 }
@@ -413,21 +413,26 @@ int getSymbolOffset(const char *libName) {
     return first_entry_addr - first_entry_offset;
 }
 
-int rubick::hookFunction(char *libSo, char *targetSymbol, void *newFunc, void **oldFunc) {
-    struct MemoryMap *p_array_memmap = (struct MemoryMap *) malloc(MMARRAYSIZE * sizeof(struct MemoryMap));
-    int memmapCount = 0;
-    if (loadMemMap(getpid(), p_array_memmap, &memmapCount)) {
+bool available = true;
+struct MemoryMap *p_array_memmap = 0;
+int memmapCount = 0;
+
+int pudge::hookFunction(char *libSo, char *targetSymbol, void *newFunc, void **oldFunc) {
+    if(!available){
         return 0;
     }
-    LOGD("totalCount = %d", memmapCount);
-    for (int i = 0; i < memmapCount; ++i) {
-//        LOGD("detail %lx-%lx %s", p_array_memmap[i].start, p_array_memmap[i].end,
-//             p_array_memmap[i].name);
+    if(!p_array_memmap){
+        p_array_memmap = (struct MemoryMap *) malloc(MMARRAYSIZE * sizeof(struct MemoryMap));
+        if (loadMemMap(getpid(), p_array_memmap, &memmapCount)) {
+            available = false;
+            return 0;
+        }
+        LOGD("totalCount = %d", memmapCount);
     }
+
     char libName[1024];
     unsigned long start;
-    if (getTargetLibAddr(libSo, libName, sizeof(libName), &start, p_array_memmap,
-                         memmapCount)) {
+    if (!getTargetLibAddr(libSo, libName, sizeof(libName), &start, p_array_memmap, memmapCount)) {
         return 0;
     }
     LOGD("find %s %lx", libName, start);
@@ -437,8 +442,8 @@ int rubick::hookFunction(char *libSo, char *targetSymbol, void *newFunc, void **
         return 0;
     }
 
-    unsigned long addr = 0;
-    unsigned long size = 0;
+    unsigned int addr = 0;
+    unsigned int size = 0;
     int result = lookupSymbol(p_symbol,STT_FUNC,targetSymbol,&addr,&size);
     if(!result){
         return 0;
@@ -452,9 +457,24 @@ int rubick::hookFunction(char *libSo, char *targetSymbol, void *newFunc, void **
     sprintf(str, "/system/lib/%s", libSo);
     int offset = getSymbolOffset(str);
 
-    LOGD("result 0x%lx size:%d offset:%d ",addr,size,offset);
+    LOGD("result addr:0x%lx size:%d offset:%d ",addr,size,offset);
+    if(addr  && size > 0){
+        Cydia::MSHookFunction((char*)addr-offset, newFunc,(oldFunc), targetSymbol);
+        return 1;
+    }
 
-    Cydia::MSHookFunction((char*)addr-offset, newFunc,(oldFunc), targetSymbol);
+    return 0;
+}
 
-    return 1;
+int pudge:: search(int addr, int target, int maxSearch) {
+    int *p_addr = reinterpret_cast<int *>(addr);
+
+    for (int i = 0; i < maxSearch; ++i) {
+
+        int tempValue = *(p_addr + i);
+        if (tempValue == target) {
+            return i;
+        }
+    }
+    return -1;
 }

@@ -11,21 +11,22 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 
 add_library( # Sets the name of the library.
-             mshook
+             rubick
 
              # Sets the library as a shared library.
              SHARED
 
              # Provides a relative path to your source file(s).
              src/main/cpp/MSHook/ARM.cpp
+             src/main/cpp/MSHook/x86.cpp
+             src/main/cpp/MSHook/x86_64.cpp
              src/main/cpp/MSHook/Thumb.cpp
              src/main/cpp/MSHook/Debug.cpp
              src/main/cpp/MSHook/Hooker.cpp
              src/main/cpp/MSHook/PosixMemory.cpp
-             src/main/cpp/Core/FastLoadDex.cpp
-             src/main/cpp/util.cpp
              src/main/cpp/mshook.cpp
-             src/main/cpp/rubick.cpp
+             src/main/cpp/rubick_lollipop.cpp
+             src/main/cpp/pudge.cpp
              )
 
 # Searches for a specified prebuilt library and stores the path as a
@@ -46,7 +47,7 @@ find_library( # Sets the name of the path variable.
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
-                       mshook
+                       rubick
 
                        # Links the target library to the log library
                        # included in the NDK.

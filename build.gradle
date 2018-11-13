@@ -13,10 +13,10 @@ android {
 
         externalNativeBuild {
             ndkBuild {
-                abiFilters "armeabi"
+                abiFilters "armeabi","x86"
             }
             cmake {
-                abiFilters "armeabi"
+                abiFilters "armeabi","x86"
                 cppFlags "-std=c++11 -fexceptions -frtti"
                 arguments "-DANDROID_STL=gnustl_static"
             }

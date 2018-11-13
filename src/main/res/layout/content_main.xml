@@ -9,4 +9,7 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <ImageView android:id="@+id/img" android:layout_width="200dp" android:layout_height="200dp"
+               android:scaleType="fitXY"/>
+
 </android.support.constraint.ConstraintLayout>
