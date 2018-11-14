@@ -39,11 +39,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.toolbar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //System.out.println(Runtime.getRuntime().maxMemory());
 
                 ImageView imageView = (ImageView) findViewById(R.id.img);
                 Bitmap bitmap = Rubick.createBitmap(1024, 1024, Bitmap.Config.ARGB_8888);
-                System.out.println("test:"+bitmap.getAllocationByteCount());
 
                 Canvas canvas = new Canvas(bitmap);
                 canvas.drawColor(Color.YELLOW);

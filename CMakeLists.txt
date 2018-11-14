@@ -24,8 +24,9 @@ add_library( # Sets the name of the library.
              src/main/cpp/MSHook/Debug.cpp
              src/main/cpp/MSHook/Hooker.cpp
              src/main/cpp/MSHook/PosixMemory.cpp
-             src/main/cpp/mshook.cpp
+             src/main/cpp/rubick.cpp
              src/main/cpp/rubick_lollipop.cpp
+             src/main/cpp/rubick_marshmallow.cpp
              src/main/cpp/pudge.cpp
              )
 

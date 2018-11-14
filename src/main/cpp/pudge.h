@@ -20,6 +20,4 @@ namespace pudge{
 }
 
 
-
-
 #endif //NATIVE_PUDGE_H

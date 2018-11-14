@@ -14,7 +14,7 @@ public class Rubick {
     private static ANDROID_VERSION version;
 
     enum ANDROID_VERSION {
-        ANDROID_5X,ANDROID_6X,ANDROID_7X;
+        ANDROID_5X,ANDROID_6X
     }
 
     static {
@@ -37,11 +37,11 @@ public class Rubick {
         }
 
         threadLocal.get().set(true);
-
         Bitmap bitmap = Bitmap.createBitmap(width, height, config);
-
-        BitmapUtil.setBuffer(bitmap,null);
         threadLocal.get().set(false);
+        if(version == ANDROID_VERSION.ANDROID_5X) {
+            BitmapUtil.setBuffer(bitmap,null);
+        }
 
         return bitmap;
     }

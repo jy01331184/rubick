@@ -6,11 +6,13 @@
 #define NATIVE_RUBICK_H
 
 #include "jni.h"
-jclass rubickClass;
-jmethodID needHookMethod;
+extern jclass rubickClass;
+extern jmethodID needHookMethod;
 
-#define  LOG_TAG    "rubick"
-#define  RUBICK_LOG(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
+extern void initRubick(JNIEnv * env);
+
+#define  RUBICK_LOG_TAG    "rubick"
+#define  RUBICK_LOG(...)  __android_log_print(ANDROID_LOG_DEBUG,RUBICK_LOG_TAG,__VA_ARGS__)
 
 #define COMPARE_BITMAP_WIDTH 17
 #define COMPARE_BITMAP_HEIGHT  47

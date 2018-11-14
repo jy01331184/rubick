@@ -112,9 +112,7 @@ extern "C" JNIEXPORT jboolean JNICALL Java_com_rubick_Rubick_initRubickL(JNIEnv 
     char *setImmutableSymbol = "_ZN8SkBitmap12setImmutableEv";
     result = result & pudge::hookFunction("libskia.so", setImmutableSymbol, (void *) newSetImmutable, (void **) &oldSetImmutable);
 
-    rubickClass = static_cast<jclass>(env->NewGlobalRef(env->FindClass("com/rubick/Rubick")));
-
-    needHookMethod = env->GetStaticMethodID(rubickClass,"needHook","()Z");
+    initRubick(env);
 
     return result?JNI_TRUE:JNI_FALSE;
 }
