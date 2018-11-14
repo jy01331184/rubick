@@ -6,10 +6,13 @@
 #define NATIVE_RUBICK_H
 
 #include "jni.h"
+#include "android/log.h"
 extern jclass rubickClass;
 extern jmethodID needHookMethod;
 
 extern void initRubick(JNIEnv * env);
+extern int hook(char *libSo, char *targetSymbol, void *newFunc, void **oldFunc);
+extern int search(int addr, int targetValue, int maxSearchTime);
 
 #define  RUBICK_LOG_TAG    "rubick"
 #define  RUBICK_LOG(...)  __android_log_print(ANDROID_LOG_DEBUG,RUBICK_LOG_TAG,__VA_ARGS__)

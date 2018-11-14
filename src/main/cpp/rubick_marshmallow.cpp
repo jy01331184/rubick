@@ -3,7 +3,6 @@
 //
 #include "rubick.h"
 #include "jni.h"
-#include "pudge.h"
 
 void* (*oldAllocateAsm)(JNIEnv *env, void *skbitmap, void *colorTable);
 
@@ -22,13 +21,13 @@ void *newAllocateJava(JNIEnv *env, void *skbitmap, void *colorTable) {
 }
 
 extern "C" JNIEXPORT jboolean JNICALL Java_com_rubick_Rubick_initRubickM(JNIEnv *env, jobject type) {
+    initRubick(env);
     char *allocateJavaSymbol = "_ZN11GraphicsJNI20allocateJavaPixelRefEP7_JNIEnvP8SkBitmapP12SkColorTable";
-    jint result = pudge::hookFunction("libandroid_runtime.so", allocateJavaSymbol, (void *) newAllocateJava, (void **) &oldAllocateJava);
+    jint result = hook("libandroid_runtime.so", allocateJavaSymbol, (void *) newAllocateJava,
+                       (void **) &oldAllocateJava);
 
     char *allocateSymbol = "_ZN11GraphicsJNI22allocateAshmemPixelRefEP7_JNIEnvP8SkBitmapP12SkColorTable";
-    result = result & pudge::hookFunction("libandroid_runtime.so", allocateSymbol, (void *) newAllocateAsm, (void **) &oldAllocateAsm);
-
-    initRubick(env);
-
+    result = result & hook("libandroid_runtime.so", allocateSymbol, (void *) newAllocateAsm,
+                           (void **) &oldAllocateAsm);
     return result?JNI_TRUE:JNI_FALSE;
 }

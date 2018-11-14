@@ -4,7 +4,6 @@
 
 #include <malloc.h>
 #include "jni.h"
-#include "pudge.h"
 #include "rubick.h"
 
 int skImageinfoOffset = 0;
@@ -59,7 +58,7 @@ void *newAllocateJavaL(JNIEnv *env, void *skbitmap, void *colorTable) {
         int addr = reinterpret_cast<int>(skbitmap);
         int *pAddr = reinterpret_cast<int *>(addr);
         if(skImageinfoOffset == 0){
-            int widthIndex = pudge::search(addr,COMPARE_BITMAP_WIDTH,20);
+            int widthIndex = search(addr, COMPARE_BITMAP_WIDTH, 20);
             if(*(pAddr + widthIndex + 1) == COMPARE_BITMAP_HEIGHT){
                 skImageinfoOffset = widthIndex;
                 RUBICK_LOG("find skImageinfoOffset %d", skImageinfoOffset);
@@ -94,25 +93,29 @@ void *newAllocateJavaL(JNIEnv *env, void *skbitmap, void *colorTable) {
 
 
 extern "C" JNIEXPORT jboolean JNICALL Java_com_rubick_Rubick_initRubickL(JNIEnv *env, jobject type) {
+    initRubick(env);
     char *allocateJavaSymbol = "_ZN11GraphicsJNI20allocateJavaPixelRefEP7_JNIEnvP8SkBitmapP12SkColorTable";
-    jint result = pudge::hookFunction("libandroid_runtime.so", allocateJavaSymbol, (void *) newAllocateJavaL, (void **) &oldAllocateJavaL);
+    jint result = hook("libandroid_runtime.so", allocateJavaSymbol, (void *) newAllocateJavaL,
+                       (void **) &oldAllocateJavaL);
 
     char *allocateSymbol = "_ZN16SkMallocPixelRef11NewWithProcERK11SkImageInfojP12SkColorTablePvPFvS5_S5_ES5_";
-    result = result & pudge::hookFunction("libskia.so", allocateSymbol, (void *) newAllocate, (void **) &oldAllocate);
+    result = result &
+            hook("libskia.so", allocateSymbol, (void *) newAllocate, (void **) &oldAllocate);
 
     char *unrefSymbol = "_ZNK12SkRefCntBase5unrefEv";
-    result = result & pudge::hookFunction("libskia.so", unrefSymbol, (void *) newUnref, (void **) &oldUnref);
+    result = result & hook("libskia.so", unrefSymbol, (void *) newUnref, (void **) &oldUnref);
 
     char *lockPixelsSymbol = "_ZNK8SkBitmap10lockPixelsEv";
-    result = result & pudge::hookFunction("libskia.so", lockPixelsSymbol, (void *)newLockPixels , (void **) &oldLockPixels);
+    result = result &
+            hook("libskia.so", lockPixelsSymbol, (void *) newLockPixels, (void **) &oldLockPixels);
 
     char *setPixelRefSymbol = "_ZN8SkBitmap11setPixelRefEP10SkPixelRefii";
-    result = result & pudge::hookFunction("libskia.so", setPixelRefSymbol, (void *) newSetPixelRef, (void **) &oldSetPixelRef);
+    result = result & hook("libskia.so", setPixelRefSymbol, (void *) newSetPixelRef,
+                           (void **) &oldSetPixelRef);
 
     char *setImmutableSymbol = "_ZN8SkBitmap12setImmutableEv";
-    result = result & pudge::hookFunction("libskia.so", setImmutableSymbol, (void *) newSetImmutable, (void **) &oldSetImmutable);
-
-    initRubick(env);
+    result = result & hook("libskia.so", setImmutableSymbol, (void *) newSetImmutable,
+                           (void **) &oldSetImmutable);
 
     return result?JNI_TRUE:JNI_FALSE;
 }

@@ -33,7 +33,7 @@ public class Rubick {
         if (!init) {
             throw new IllegalStateException("Rubick has not init");
         } else if (!available) {
-            throw new IllegalStateException("Rubick not support");
+            return Bitmap.createBitmap(width, height, config);
         }
 
         threadLocal.get().set(true);
