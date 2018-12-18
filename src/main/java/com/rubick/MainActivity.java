@@ -1,4 +1,4 @@
-package com.mshook;
+package com.rubick;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,8 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
-
-import com.rubick.Rubick;
 
 public class MainActivity extends AppCompatActivity {
 

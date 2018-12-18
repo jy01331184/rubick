@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".MainActivity"
+    tools:context="com.rubick.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <ImageView android:id="@+id/img" android:layout_width="200dp" android:layout_height="200dp"
