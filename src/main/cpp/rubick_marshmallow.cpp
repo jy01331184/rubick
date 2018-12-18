@@ -4,6 +4,11 @@
 #include "rubick.h"
 #include "jni.h"
 
+/**
+ * http://androidxref.com/6.0.1_r10/xref/frameworks/base/core/jni/android/graphics/Graphics.cpp#486
+ * allocateJavaPixelRef -> allocateAshmemPixelRef
+ */
+
 void* (*oldAllocateAsm)(JNIEnv *env, void *skbitmap, void *colorTable);
 
 void* newAllocateAsm(JNIEnv *env, void *skbitmap, void *colorTable) {

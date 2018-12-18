@@ -6,6 +6,15 @@
 #include "jni.h"
 #include "rubick.h"
 
+/**
+ * http://androidxref.com/5.1.1_r6/xref/frameworks/base/core/jni/android_view_SurfaceControl.cpp#178
+ * http://androidxref.com/5.1.1_r6/xref/frameworks/base/core/jni/android/graphics/Graphics.cpp#531
+ * http://androidxref.com/5.1.1_r6/xref/external/skia/include/core/SkMallocPixelRef.h
+ * allocateJavaPixelRef ->
+ * gVMRuntime.newNonMovableArray() = AndroidPixelRef -> SkMallocPixelRef::NewWithProc()
+ * setImmutable() -> setPixelRef -> unref -> lockPixels
+ */
+
 int skImageinfoOffset = 0;
 
 void freeMem(void* addr, void* context) {
