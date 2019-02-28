@@ -68,7 +68,7 @@ void *newAllocateJavaL(JNIEnv *env, void *skbitmap, void *colorTable) {
         int *pAddr = reinterpret_cast<int *>(addr);
         if(skImageinfoOffset == 0){
             int widthIndex = search(addr, COMPARE_BITMAP_WIDTH, 20);
-            if(*(pAddr + widthIndex + 1) == COMPARE_BITMAP_HEIGHT){
+            if(widthIndex>=0 && *(pAddr + widthIndex + 1) == COMPARE_BITMAP_HEIGHT){
                 skImageinfoOffset = widthIndex;
                 RUBICK_LOG("find skImageinfoOffset %d", skImageinfoOffset);
             } else {

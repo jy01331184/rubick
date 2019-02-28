@@ -5,6 +5,7 @@
 #include "jni.h"
 
 /**
+ * http://androidxref.com/7.1.2_r36/xref/frameworks/base/core/jni/android/graphics/Bitmap.cpp#726 :: bitmap_creator()
  * http://androidxref.com/6.0.1_r10/xref/frameworks/base/core/jni/android/graphics/Graphics.cpp#486
  * allocateJavaPixelRef -> allocateAshmemPixelRef
  */
