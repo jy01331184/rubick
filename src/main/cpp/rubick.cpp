@@ -14,16 +14,16 @@ PUDGE_SEARCH_FUNCTION pudgeSearchFunction = 0;
 const char * PUDGE_SO = "libpudge.so";
 
 void initRubick(JNIEnv *env) {
-    void *handle = dlopen(PUDGE_SO, RTLD_LAZY);
-    if (handle) {
-        RUBICK_LOG("initRubick dlopen success");
-        pudgeHookFunction = (PUDGE_HOOK_FUNCTION)dlsym(handle, "_ZN5pudge12hookFunctionEPcS0_PvPS1_");
-        pudgeSearchFunction = (PUDGE_SEARCH_FUNCTION)dlsym(handle, "_ZN5pudge6searchEiii");
-        RUBICK_LOG("pudgeHookFunction %p,pudgeSearchFunction %p",pudgeHookFunction,pudgeSearchFunction);
-
-    } else {
-        RUBICK_LOG("initRubick dlopen fail");
-    }
+//    void *handle = dlopen(PUDGE_SO, RTLD_LAZY);
+//    if (handle) {
+//        RUBICK_LOG("initRubick dlopen success");
+//        pudgeHookFunction = (PUDGE_HOOK_FUNCTION)dlsym(handle, "_ZN5pudge12hookFunctionEPcS0_PvPS1_");
+//        pudgeSearchFunction = (PUDGE_SEARCH_FUNCTION)dlsym(handle, "_ZN5pudge6searchEiii");
+//        RUBICK_LOG("pudgeHookFunction %p,pudgeSearchFunction %p",pudgeHookFunction,pudgeSearchFunction);
+//
+//    } else {
+//        RUBICK_LOG("initRubick dlopen fail");
+//    }
 
     rubickClass = static_cast<jclass>(env->NewGlobalRef(env->FindClass("com/rubick/Rubick")));
 

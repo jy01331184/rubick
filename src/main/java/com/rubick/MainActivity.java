@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        back = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
+        back = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Canvas canvas = new Canvas(bitmap);
                 canvas.drawColor(Color.YELLOW);
-                canvas.drawBitmap(back,0,0,new Paint());
+                canvas.drawBitmap(back, 0, 0, new Paint());
                 imageView.setImageBitmap(bitmap);
             }
         });

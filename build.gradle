@@ -25,6 +25,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug{
+            ndk{
+                abiFilters "armeabi","armeabi-v7a","x86"
+            }
+        }
     }
     externalNativeBuild {
         cmake {

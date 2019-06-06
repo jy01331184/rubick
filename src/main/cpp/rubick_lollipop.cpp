@@ -64,8 +64,8 @@ void *(*oldAllocateJavaL)(JNIEnv *env, void *skbitmap, void *colorTable);
 
 void *newAllocateJavaL(JNIEnv *env, void *skbitmap, void *colorTable) {
     if(skImageinfoOffset != -1 && env->CallStaticBooleanMethod(rubickClass,needHookMethod)){
-        int addr = reinterpret_cast<int>(skbitmap);
-        int *pAddr = reinterpret_cast<int *>(addr);
+        size_t addr = reinterpret_cast<size_t>(skbitmap);
+        size_t *pAddr = reinterpret_cast<size_t *>(addr);
         if(skImageinfoOffset == 0){
             int widthIndex = search(addr, COMPARE_BITMAP_WIDTH, 20);
             if(widthIndex>=0 && *(pAddr + widthIndex + 1) == COMPARE_BITMAP_HEIGHT){

@@ -20,6 +20,7 @@ add_library( # Sets the name of the library.
              src/main/cpp/rubick.cpp
              src/main/cpp/rubick_lollipop.cpp
              src/main/cpp/rubick_marshmallow.cpp
+
              )
 
 # Searches for a specified prebuilt library and stores the path as a
@@ -35,13 +36,27 @@ find_library( # Sets the name of the path variable.
               # you want CMake to locate.
               log )
 
+add_library( # Sets the name of the library.
+        xhook
+        # Sets the library as a shared library.
+        SHARED
+        # Provides a relative path to your source file(s).
+        IMPORTED)
+
+set_target_properties(
+        xhook
+        PROPERTIES IMPORTED_LOCATION
+        ${CMAKE_SOURCE_DIR}/libs/${ANDROID_ABI}/libxhook.so)
+
+
+
 # Specifies libraries CMake should link to your target library. You
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
 target_link_libraries( # Specifies the target library.
                        rubick
-
+                       xhook
                        # Links the target library to the log library
                        # included in the NDK.
                        ${log-lib} )

@@ -13,7 +13,7 @@ public class Rubick {
     private static boolean available = false;
     private static ANDROID_VERSION version;
 
-    enum ANDROID_VERSION {
+    public enum ANDROID_VERSION {
         ANDROID_5X,ANDROID_6X
     }
 
@@ -53,13 +53,13 @@ public class Rubick {
     public synchronized static boolean init(Context context) {
         if (!init) {
             if (Build.VERSION_CODES.LOLLIPOP == Build.VERSION.SDK_INT || Build.VERSION_CODES.LOLLIPOP_MR1 == Build.VERSION.SDK_INT) {
-                version = ANDROID_VERSION.ANDROID_5X;
-                available = initRubickL();
-                if(available){
-                    threadLocal.get().set(true);
-                    Bitmap.createBitmap(COMPARE_WIDTH, COMPARE_HEIGHT, Bitmap.Config.ARGB_8888);
-                    threadLocal.get().set(false);
-                }
+//                version = ANDROID_VERSION.ANDROID_5X;
+//                available = initRubickL();
+//                if(available){
+//                    threadLocal.get().set(true);
+//                    Bitmap.createBitmap(COMPARE_WIDTH, COMPARE_HEIGHT, Bitmap.Config.ARGB_8888);
+//                    threadLocal.get().set(false);
+//                }
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && Build.VERSION.SDK_INT <= Build.VERSION_CODES.N_MR1) {
                 version = ANDROID_VERSION.ANDROID_6X;
                 available = initRubickM();
