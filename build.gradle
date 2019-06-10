@@ -13,7 +13,6 @@ android {
         applicationId "com.rubick"
         externalNativeBuild {
             cmake {
-                abiFilters "armeabi","armeabi-v7a","x86"
                 cppFlags "-std=c++11 -fexceptions -frtti"
                 arguments "-DANDROID_STL=gnustl_static"
             }
@@ -24,6 +23,11 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug{
+            ndk{
+                abiFilters "armeabi-v7a","x86","arm64-v8a"
+            }
         }
     }
     externalNativeBuild {

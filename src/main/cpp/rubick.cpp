@@ -6,6 +6,8 @@
 
 jclass rubickClass;
 jmethodID needHookMethod;
+typedef long (*PUDGE_FIND_FUNCTION)(char *libSo, char *targetSymbol);
+PUDGE_FIND_FUNCTION pudgeFindFunction = 0;
 typedef int (*PUDGE_HOOK_FUNCTION)(char *libSo, char *targetSymbol, void *newFunc, void **oldFunc);
 PUDGE_HOOK_FUNCTION pudgeHookFunction = 0;
 typedef int (*PUDGE_SEARCH_FUNCTION)(int addr, int target, int maxSearch);
@@ -13,16 +15,17 @@ PUDGE_SEARCH_FUNCTION pudgeSearchFunction = 0;
 
 const char * PUDGE_SO = "libpudge.so";
 
+
 void initRubick(JNIEnv *env) {
     void *handle = dlopen(PUDGE_SO, RTLD_LAZY);
     if (handle) {
-        RUBICK_LOG("initRubick dlopen success");
+        RUBICK_LOG("initRubick dlopen pudge success");
+        pudgeFindFunction = (PUDGE_FIND_FUNCTION)dlsym(handle, "_ZN5pudge15findFuncAddressEPcS0_");
         pudgeHookFunction = (PUDGE_HOOK_FUNCTION)dlsym(handle, "_ZN5pudge12hookFunctionEPcS0_PvPS1_");
         pudgeSearchFunction = (PUDGE_SEARCH_FUNCTION)dlsym(handle, "_ZN5pudge6searchEiii");
         RUBICK_LOG("pudgeHookFunction %p,pudgeSearchFunction %p",pudgeHookFunction,pudgeSearchFunction);
-
     } else {
-        RUBICK_LOG("initRubick dlopen fail");
+        RUBICK_LOG("initRubick dlopen pudge fail");
     }
 
     rubickClass = static_cast<jclass>(env->NewGlobalRef(env->FindClass("com/rubick/Rubick")));
